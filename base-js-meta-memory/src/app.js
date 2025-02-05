@@ -2,13 +2,14 @@ import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@buil
 import { MemoryDB as Database } from '@builderbot/bot';
 import { MetaProvider as Provider } from '@builderbot/provider-meta';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { dateFlow } from '../flows/date.Flow.js';
+
 import { welcomeFlow } from '../flows/welcome.Flow.js';
-import { formFlow } from '../flows/form.Flow.js';
+
 import { documentFlow, mediaFlow } from '../flows/AnalisisDocumentos.js';
 import { flowHospital} from '../flows/hospital.Flow.js';
 import { flowFarmacia } from '../flows/farmacia.Flow.js';
 import { flowAgregarRecordatorio,flowConsultarRecordatorio } from '../flows/recordatorio.Flow.js';
+import { legalFlow } from '../flows/search.js';
 import path from 'path';
 
 // Configuración de Gemini
@@ -135,9 +136,8 @@ const main = async () => {
     const database = new Database();
 
     const adapterFlow = createFlow([
-        flowPrincipal,
-        dateFlow,
-        formFlow,
+        flowPrincipal,legalFlow,
+
         welcomeFlow,
         documentFlow,
         mediaFlow,

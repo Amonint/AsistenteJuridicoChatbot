@@ -42,7 +42,7 @@ const saveDocumentToFirebase = async (userId, documentData) => {
       });
     }
 
-    console.log("guardado");
+    console.log("Guardado en Firebase:");
     return true;
   } catch (error) {
     console.error("❌ Error guardando en Firebase:", error);
@@ -51,55 +51,74 @@ const saveDocumentToFirebase = async (userId, documentData) => {
 };
 
 const structureDocumentData = (analysisText) => {
-  return {
-    fechaAnalisis: new Date().toISOString(),
-    informacionGeneral: {
-      tipoDocumento: "",
-      jurisdiccion: "",
-    },
-    parteDemandante: {
-      entidad: "",
-      ruc: "",
-      domicilio: "",
-      email: "",
-      representantes: {
-        procuradorPrincipal: {},
-        otrosProcuradores: [],
-        gerente: {},
-      },
-    },
-    parteDemandada: {
-      nombre: "",
-      cedula: "",
-      direccion: "",
-    },
-    detallesCredito: {
-      numeroPagare: "",
-      numeroCredito: "",
-      fechaEmision: "",
-      montoOriginal: 0,
-      tasaInteres: 0,
-      estado: "",
-      montoAdeudado: 0,
-    },
-    pretensiones: [],
-    pruebasAnunciadas: {
-      documentales: [],
-      testimoniales: [],
-      periciales: [],
-    },
-    informacionProcesal: {
-      tipoProcedimiento: "",
-      cuantia: 0,
-      baseLegal: "",
-      fundamentosConstitucionales: [],
-    },
-    analisisCompleto: analysisText, // Guardamos el análisis original como referencia
-  };
-};
-const LEGAL_ANALYSIS_PROMPT =
-  "Analiza este documento legal y extrae la información clave.";
+  try {
+    const jsonStart = analysisText.indexOf('{');
+    const jsonEnd = analysisText.lastIndexOf('}') + 1;
+    const jsonString = analysisText.slice(jsonStart, jsonEnd);
+    const analysisData = JSON.parse(jsonString);
 
+    return {
+      fechaAnalisis: new Date().toISOString(),
+      ...analysisData,
+      
+    };
+  } catch (error) {
+    console.error("Error parseando JSON de Gemini:", error);
+    return {
+      fechaAnalisis: new Date().toISOString(),
+      
+    };
+  }
+};
+const LEGAL_ANALYSIS_PROMPT = `
+Analiza este documento legal y genera un JSON estrictamente con esta estructura:
+
+{
+  "informacionGeneral": {
+    "tipoDocumento": "Demanda de cobro ejecutivo",
+    "jurisdiccion": "Ecuador"
+  },
+  "parteDemandante": {
+    "entidad": "Cooperativa de Ahorro y Crédito Jardín Azuayo Ltda.",
+    "ruc": "[Extraer RUC]",
+    "domicilio": "[Extraer dirección]",
+    "email": "[Extraer email]",
+    "representantes": {
+      "gerente": {"nombre": "Eco. Juan Martínez"},
+      "procuradorPrincipal": {"nombre": "Abg. Stalin Donato Quezada Calderón"},
+      "otrosProcuradores": ["Dr. Jorge Alberto Delgado Altamirano", "Abg. Carmen Lucía Carrasco Espinoza"]
+    }
+  },
+  "parteDemandada": {
+    "nombre": "Leonardo Yaguache y Magaly Alvarado",
+    "cedula": "[Extraer cédulas]",
+    "direccion": "[Extraer dirección demandados]"
+  },
+  "detallesCredito": {
+    "numeroPagare": "7719",
+    "numeroCredito": "[Extraer número crédito]",
+    "fechaEmision": "2023-03-28",
+    "montoOriginal": 10000,
+    "tasaInteres": [valor numérico],
+    "estado": "En mora desde dividendo 8",
+    "montoAdeudado": 9127.51
+  },
+  "pretensiones": [
+    "Pago de USD 10,000.00",
+    "Intereses devengados y por devengar",
+    "Costas procesales",
+    "Honorarios profesionales"
+  ],
+  "informacionProcesal": {
+    "tipoProcedimiento": "Ejecutivo",
+    "cuantia": 10500,
+    "baseLegal": "Arts. 347, 348, 349 COGEP",
+    "fundamentosConstitucionales": ["Art. 75 CE", "Art. 76 CE", "Art. 82 CE"]
+  }
+}
+
+Responde SOLO con el JSON válido, sin texto adicional.
+`;
 const sendImageToGemini = async (imagePath, userId) => {
   try {
     const imgBuffer = fs.readFileSync(imagePath);
