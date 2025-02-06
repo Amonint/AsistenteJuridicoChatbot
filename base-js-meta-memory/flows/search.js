@@ -45,22 +45,11 @@ Información:
 
 Reglas de formato:
 1. No uses nombres técnicos de campos como "detallesCredito" o "informacionProcesal"
-2. Agrupa la información de manera lógica y ordenada
-3. Usa emojis relevantes
-4. Destaca información importante
-5. Usa lenguaje claro y directo
-6. Mantén el formato WhatsApp (usa * para negritas)
-
-Ejemplo de formato deseado:
-📄 *Información del Crédito*
-• Monto: $10,000
-• Cuota mensual: $500
-• Estado: Activo
-
-👤 *Información del Cliente*
-• Nombre: Juan Pérez
-• Cédula: 1234567890
-
+2. Usa "_ " para cursiva en títulos y etiquetas importantes
+3. Mantén el formato de moneda como "USD X.XX"
+4. Estrucutra la información en secciones claras y concisas
+5. Usa tabuladores o sangrías para estructurar la información
+6. Usa "- " para listas de elementos
 Responde SOLO con el texto formateado, sin explicaciones adicionales.
 `;
 

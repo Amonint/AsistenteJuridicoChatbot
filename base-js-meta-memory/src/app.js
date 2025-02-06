@@ -8,8 +8,9 @@ import { welcomeFlow } from '../flows/welcome.Flow.js';
 import { documentFlow, mediaFlow } from '../flows/AnalisisDocumentos.js';
 import { flowHospital} from '../flows/hospital.Flow.js';
 import { flowFarmacia } from '../flows/farmacia.Flow.js';
-import { flowAgregarRecordatorio,flowConsultarRecordatorio } from '../flows/recordatorio.Flow.js';
+import{ queryStatusFlow} from '../flows/consultasEstados.js';    
 import { legalFlow } from '../flows/search.js';
+import { updateStatusFlow } from '../flows/estadosFlow.js';
 import path from 'path';
 
 // Configuración de Gemini
@@ -142,7 +143,7 @@ const main = async () => {
         documentFlow,
         mediaFlow,
         flowFarmacia,
-        flowHospital,flowAgregarRecordatorio,flowConsultarRecordatorio
+        flowHospital,updateStatusFlow,queryStatusFlow
     ]);
 
     const adapterProvider = createProvider(Provider, {
